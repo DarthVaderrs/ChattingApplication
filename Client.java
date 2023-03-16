@@ -1,14 +1,19 @@
 import java.net.*;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 
 
@@ -33,17 +38,19 @@ public class Client extends JFrame {
     public Client()
     {
         try {
-           // System.out.println("Sending request to server");
-           // socket=new Socket("127.0.0.1",8080);
-           // System.out.println("connection done.");
+            System.out.println("Sending request to server");
+            socket=new Socket("127.0.0.1",8081);
+            System.out.println("connection done.");
 
 
-           // br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-           // out =new PrintWriter(socket.getOutputStream());
+            br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out =new PrintWriter(socket.getOutputStream());
 
 
            createGUI();
-           // startReading();
+           handleEvents();
+
+            startReading();
            // startWriting();
 
 
@@ -53,6 +60,61 @@ public class Client extends JFrame {
         }
 
     }
+
+      
+      private void handleEvents() {
+        messageInput.addKeyListener(new KeyListener() {
+
+          
+
+          @Override
+          public void keyTyped(KeyEvent e) {
+            // tODO Auto-generated method stub
+
+
+
+            
+          }
+
+          @Override
+          public void keyPressed(KeyEvent e) {
+            //tODO Auto-generated method stub
+
+
+
+            
+          }
+
+          @Override
+          public void keyReleased(KeyEvent e) {
+
+
+            // tODO Auto-generated method stub
+
+             // System.out.println("key released"+e.getKeyCode());
+              if(e.getKeyCode()==10) {
+               // System.out.println("You have pressed ENTER button");
+                String contentToSend=messageInput.getText();
+                messagArea.append("Me :"+contentToSend+"\n");
+                out.println(contentToSend);
+                out.flush();
+                messageInput.setText("");
+                messageInput.requestFocus();
+
+
+
+              }
+
+            
+          }
+          
+
+
+        });
+
+
+
+      }
 
 
 
@@ -65,7 +127,7 @@ public class Client extends JFrame {
 
 
       this.setTitle("Client Messanger[END]");
-      this.setSize(600,600);
+      this.setSize(600,700);
       this.setLocationRelativeTo(null);
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -77,10 +139,18 @@ public class Client extends JFrame {
       messagArea.setFont(font);
       messageInput.setFont(font);
 
+      heading.setIcon(new ImageIcon("appLogo.jpg"));
+
+      heading.setHorizontalTextPosition(SwingConstants.CENTER);
+      heading.setVerticalTextPosition(SwingConstants.BOTTOM);
       heading.setHorizontalAlignment(SwingConstants.CENTER);
       heading.setBorder(BorderFactory.createEmptyBorder(25,25,25,25));
+      messagArea.setEditable(false);
       
 
+
+      //textfieldWriring
+      messageInput.setHorizontalAlignment(SwingConstants.RIGHT);
 
 
       //layout of frame
@@ -88,9 +158,10 @@ public class Client extends JFrame {
 
       //add component to frame
       this.add(heading,BorderLayout.NORTH);
+      JScrollPane jScrollPane=new JScrollPane(messagArea);
       this.add(messageInput,BorderLayout.SOUTH);
-      this.add(messagArea,BorderLayout.CENTER);
-
+      this.add(jScrollPane, BorderLayout.CENTER);
+      
       
 
 
@@ -126,12 +197,15 @@ public class Client extends JFrame {
 
             if(msg.equals("exit")) {
       System.out.println("Server terminated the chat");   
+      JOptionPane.showMessageDialog(this,"Server terminated the chat");
+      messageInput.setEnabled(false);
       socket.close();
       break;
      }
 
-      System.out.println("Server : "+msg);
-    
+      //System.out.println("Server : "+msg);
+      messagArea.append("Server : " +msg+"\n ");     
+
     }
     }
 
