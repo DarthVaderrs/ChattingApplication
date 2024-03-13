@@ -4,24 +4,19 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
-
 class Server {
-    
      ServerSocket server;
      Socket socket;
-
       BufferedReader br;
       PrintWriter out;
 
 
+    
         //Constructor..
+    
        public Server()
       {
-
-          try  {
-
-
+      try  {
              server=new ServerSocket(8080);
              System.out.println("server is ready to accept connection");
              System.out.println("waiting...");
@@ -32,19 +27,13 @@ class Server {
 
              startReading();
              startWriting();
-
-
-          }
-
-            catch (Exception e) {
-
-              e.printStackTrace();
-
+           }
+      catch (Exception e) {
+       e.printStackTrace();
+         }
          }
 
-         }
-
-        
+    
           public void startReading(){
 
           //multithtreading
@@ -52,23 +41,15 @@ class Server {
 
            Runnable r1 =()-> 
            {
-
-
+               
              System.out.println("reader started..");
-            
              try{
-            
              while(true){
-
-               String msg = br.readLine();
-
+              String msg = br.readLine();
               if(msg.equals("exit"))
        {
         System.out.println("Client terminated the chat");   
         socket.close();
-        
-
-
         break;
        }
 
@@ -78,27 +59,19 @@ System.out.println("Client : "+msg);
 }catch(Exception e){
   e.printStackTrace();
 }
-
-
   };
-
   new Thread(r1).start();
 
       }
 public void startWriting()
     {
         //thread- will recieve data and sent to client
-
-
         Runnable r2 =()-> {
           System.out.println("writer started..");
           
-          try {
-            
-          
+          try {     
           while(true && !socket.isClosed() )
           {
-
               BufferedReader br1= new BufferedReader(new java.io.InputStreamReader(System.in));
               String Content =br1.readLine();
 
@@ -122,7 +95,6 @@ public void startWriting()
 
 
      }
-
           public static void main(String[] args)
          {
           System.out.println("this is server..going to start server");
